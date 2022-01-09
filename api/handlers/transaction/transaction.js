@@ -20,7 +20,6 @@ const getSPPByNISN = async (nisn) => {
 }
 
 const create_entry = async (nisn, months, id_petugas) =>{
-  
   const siswa = await models.siswa.findOne({raw: true,where: {nisn: nisn}});
   const tagihan = siswa.sisa_tunggakan;
   const biayaSPP = await getSPPByNISN(nisn);
@@ -76,24 +75,23 @@ const create_entry = async (nisn, months, id_petugas) =>{
         code: 400
       });
     }
-
   }
 }
 
-const test = async (nisn, bulan) =>{
-  const siswa = await models.siswa.findOne({raw: true,where: {nisn: nisn}})
-  console.log({siswa})
-  console.log("SEBELUM : " + siswa.sisa_tunggakan)
+// const test = async (nisn, bulan) =>{
+//   const siswa = await models.siswa.findOne({raw: true,where: {nisn: nisn}})
+//   console.log({siswa})
+//   console.log("SEBELUM : " + siswa.sisa_tunggakan)
   
-  const petugas = await models.petugas.findAll({raw: true})
-  const entrySpp = await create_entry(nisn, bulan, petugas[0].id_petugas)
+//   const petugas = await models.petugas.findAll({raw: true})
+//   const entrySpp = await create_entry(nisn, bulan, petugas[0].id_petugas)
 
-  const siswaBaru = await models.siswa.findOne({raw: true, where: {nisn: nisn}})
-  console.log("SESUDAH : " + siswaBaru.sisa_tunggakan)
+//   const siswaBaru = await models.siswa.findOne({raw: true, where: {nisn: nisn}})
+//   console.log("SESUDAH : " + siswaBaru.sisa_tunggakan)
 
-  console.log({entrySpp});
+//   console.log({entrySpp});
 
-}
+// }
 
-test("kkkkadjfljijwij", 1);
-module.exports = create_entry;
+// test("kkkkadjfljijwij", 1);
+// module.exports = create_entry;
