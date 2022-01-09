@@ -8,15 +8,16 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-const {
-  validate_admin,
-  validate_petugas,
-  validate_siswa
-} = require('./handlers/validation/validator');
+const { validate } = require('./handlers/validation/validator');
+const { loginHandler } = require('./handlers/login/login')
 
 //=======TEST ENDPOINTS=======//
 
-app.get("/", (req, res) => { res.send("the server is properly") });
+app.get("/", validate(["admin"]), (req, res) => { res.send("the server is running properly") });
+
+//=======LOGIN endpoints=======//  
+
+app.post("/login", validate(["public"]), loginHandler)
 
 //=======CRUD endpoints=======//  
 

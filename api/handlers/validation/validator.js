@@ -9,59 +9,46 @@ const levelSchema = {
   },
   siswa: {
     secretKey: "faopjaowjowjo392jf2ijseklajfjskdfjaoj29jsajf"
+  },
+  public: {
+    noAuth: true,
+    secretKey: null
   }
 }
 
-const validate_admin = async (req, res, next) => {
-  try{
-    const token = req.headers.authorization.split(" ")[1];
-    if(!token) {
-      res.sendStatus(401);
-      return;
+validate = (roles) => {
+  return async (req,res,next) => {
+    try{
+      let token = req.headers.authorization;
+      token = token && token.split(" ")[1];
+      if(roles.includes("public")){
+        next();
+        return;
+      }
+  
+      if(!token){
+        res.sendStatus(401);
+        return;
+      }
+  
+      let authenticated = false;
+      for(role of roles){
+        const valid = await jwt.verify(token, levelSchema[role].secretKey) || levelSchema[role].noAuth;
+        if(valid) {
+          authenticated = true;
+          break;
+        }
+      }
+      if(authenticated) next();
+      else res.sendStatus(401);
+    }catch(err){
+      res.send(401);
+      console.log(err.message)
     }
-    const valid = await jwt.verify(token, levelSchema.admin.secretKey);
-    if(valid) next();
-    else res.sendStatus(401);
-  }catch(err){
-    res.sendStatus(401)
-    console.log(err)
-  }
-}
-
-const validate_petugas = async (req, res, next) => {
-  try{
-    const token = req.headers.authorization.split(" ")[1];
-    if(!token) {
-      res.sendStatus(401);
-      return;
-    }
-    const valid = await jwt.verify(token, levelSchema.petugas.secretKey);
-    if(valid) next();
-    else res.sendStatus(401);
-  }catch(err){
-    res.sendStatus(401)
-    console.log(err)
-  }
-}
-
-const validate_siswa = async (req, res, next) => {
-  try{
-    const token = req.headers.authorization.split(" ")[1];
-    if(!token) {
-      res.sendStatus(401);
-      return;
-    }
-    const valid = await jwt.verify(token, levelSchema.siswa.secretKey);
-    if(valid) next();
-    else res.sendStatus(401);
-  }catch(err){
-    res.sendStatus(401)
-    console.log(err)
+    
   }
 }
 
 module.exports = {
-  validate_admin,
-  validate_petugas, 
-  validate_siswa
+  validate
 };
