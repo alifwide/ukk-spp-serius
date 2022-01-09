@@ -2,11 +2,12 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
-
 app.use(cors());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+
+const scheduler = require("./handlers/scheduler/scheduler");
 
 const {
   validate_admin,
@@ -21,7 +22,7 @@ app.get("/", (req, res) => { res.send("the server is properly") });
 //=======CRUD endpoints=======//  
 
 //  CRUD kelas
-app.get("/api/crud/kelas");
+app.get(auth(["admin","petugas"]),"/api/crud/kelas");
 app.post("/api/crud/kelas");
 app.put("/api/crud/kelas");
 app.delete("/api/crud/kelas");
